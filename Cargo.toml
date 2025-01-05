@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: GPL-3.0-or-latere
+# Copyright (C) 2024 Tobias Hunger <tobias.hunger@gmail.com>
+
+[package]
+name = "multi-ls"
+version = "0.0.0"
+edition = "2024"
+authors = ["Tobias Hunger <tobias.hunger@gmail.com>"]
+homepage = "https://github.com/hunger/beautytips"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/hunger/multi-ls"
+rust-version = "1.85"
+description = "A language server multiplexer"
+readme = "README.md"
+keywords = ["tool", "language-server", "lsp", "multiplexer"]
+categories = ["command-line-utilities", "development-tools"]
+
+[package.metadata.wix]
+upgrade-guid = "56708A8F-5F7B-4268-A641-B48A7736BDAA"
+path-guid = "497212B1-3D6F-47F8-BBD4-414C0991BF83"
+license = false
+eula = false
+
+[dependencies]
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+github-attestations = true
+lto = "thin"

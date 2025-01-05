@@ -1,0 +1,125 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2024 Tobias Hunger <tobias.hunger@gmail.com>
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+name: CI
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        rust_version: [nightly]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
+          components: clippy
+
+      - name: cargo check
+        run: cargo +${{ matrix.rust_version }} check --all-features --workspace
+
+  binaries:
+    strategy:
+      matrix:
+        rust_version: [nightly]
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
+          components: clippy
+
+      - name: cargo build
+        run: cargo +${{ matrix.rust_version }} build --release --all-features --workspace
+
+      - name: Archive binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-ls-${{matrix.os}}
+          path: |
+            target/release/multi-ls
+
+  test:
+    strategy:
+      matrix:
+        rust_version: [nightly]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
+          components: clippy
+
+      - name: cargo test
+        run: cargo +${{ matrix.rust_version }} test --all-features --workspace
+
+  fmt:
+    strategy:
+      matrix:
+        rust_version: [nightly]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ matrix.rust_version}}
+          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
+          components: rustfmt
+
+      - name: cargo fmt
+        run: cargo +${{ matrix.rust_version }} fmt --check --all
+
+      - name: prettier
+        uses: creyD/prettier_action@v4.3
+        with:
+          prettier_options: --check .
+
+  clippy:
+    strategy:
+      matrix:
+        rust_version: [nightly]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ matrix.rust_version}}
+          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
+          components: clippy
+
+      - name: cargo clippy
+        run: cargo +${{ matrix.rust_version }} clippy --all-features --workspace
