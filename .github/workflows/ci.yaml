@@ -20,7 +20,7 @@ jobs:
   check:
     strategy:
       matrix:
-        rust_version: [nightly]
+        rust_version: [stable, nightly]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
@@ -31,41 +31,15 @@ jobs:
         with:
           toolchain: ${{ matrix.rust_version }}
           key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
-          components: clippy
+          components: clippy rustfmt
 
       - name: cargo check
         run: cargo +${{ matrix.rust_version }} check --all-features --workspace
 
-  binaries:
-    strategy:
-      matrix:
-        rust_version: [nightly]
-        os: [ubuntu-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ matrix.rust_version }}
-          key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
-          components: clippy
-
-      - name: cargo build
-        run: cargo +${{ matrix.rust_version }} build --release --all-features --workspace
-
-      - name: Archive binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: multi-ls-${{matrix.os}}
-          path: |
-            target/release/multi-ls
-
   test:
     strategy:
       matrix:
-        rust_version: [nightly]
+        rust_version: [stable, nightly]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
@@ -76,7 +50,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust_version }}
           key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
-          components: clippy
+          components: clippy rustfmt
 
       - name: cargo test
         run: cargo +${{ matrix.rust_version }} test --all-features --workspace
@@ -95,7 +69,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust_version}}
           key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
-          components: rustfmt
+          components: clippy rustfmt
 
       - name: cargo fmt
         run: cargo +${{ matrix.rust_version }} fmt --check --all
@@ -108,7 +82,7 @@ jobs:
   clippy:
     strategy:
       matrix:
-        rust_version: [nightly]
+        rust_version: [stable, nightly]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
@@ -119,7 +93,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust_version}}
           key: rust-v1-${{ matrix.rust_version }}-${{ matrix.os }}
-          components: clippy
+          components: clippy rustfmt
 
       - name: cargo clippy
         run: cargo +${{ matrix.rust_version }} clippy --all-features --workspace

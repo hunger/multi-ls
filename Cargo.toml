@@ -4,12 +4,12 @@
 [package]
 name = "multi-ls"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 authors = ["Tobias Hunger <tobias.hunger@gmail.com>"]
 homepage = "https://github.com/hunger/beautytips"
 license = "GPL-3.0-or-later"
 repository = "https://github.com/hunger/multi-ls"
-rust-version = "1.85"
+rust-version = "1.83"
 description = "A language server multiplexer"
 readme = "README.md"
 keywords = ["tool", "language-server", "lsp", "multiplexer"]
@@ -27,4 +27,5 @@ eula = false
 [profile.dist]
 inherits = "release"
 github-attestations = true
+pr-run-mode = "upload"
 lto = "thin"
