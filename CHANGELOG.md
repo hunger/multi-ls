@@ -11,8 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 <!-- next-header -->
-
 ## [Unreleased] - ReleaseDate
+
+
+## [0.1.1] - 2025-01-05
 
 # Features
 
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add basic project setup for CI/releases
 
 <!-- next-url -->
+[Unreleased]: https://github.com/hunger/multi-ls/compare/v0.1.1...HEAD
 
-[Unreleased]: https://github.com/hunger/multi-ls/compare/v0.1.0...HEAD
+[0.1.1]: https://github.com/hunger/multi-ls/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/hunger/multi-ls/compare/4b825dc642cb6eb9a060e54bf8d69288fbee4904...v0.1.0
